@@ -4,12 +4,17 @@ insertRoll = function(){
 }
 
 #' @export
-roll = function(dice, vocal=TRUE){
+ri = function(dice,vocal = TRUE){
     dice = substitute(dice) %>% as.character()
     if(length(dice)>1){
         dice = paste0(dice[2],dice[1],dice[3])
     }
     dice %<>% stringr::str_replace('^r|R','')
+    roll(dice,vocal)
+}
+
+#' @export
+roll = function(dice, vocal=TRUE){
     rollingRules = list()
     validTokens = "[dkscrf+\\-!DKSCRF]"
     dice %<>% tolower  %>% gsub(pattern = '\\s',replacement = '',x = .)
