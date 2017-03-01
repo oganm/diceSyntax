@@ -34,6 +34,8 @@ test_that('reroll', {
     result = sapply(1:1000,function(x){roll('10d6r1r2r3r4r5',vocal = FALSE)}) %>% mean
     expect_equal(result,60)
 
+    result = sapply(1:1000,function(x){roll('10d6r<5',vocal = FALSE)}) %>% mean
+    expect_equal(result,60)
 
     result = sapply(1:1000,function(x){roll('10d6ro1',vocal = FALSE)}) %>% mean
     expect_gt(result,39)

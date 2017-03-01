@@ -1,0 +1,39 @@
+---
+output: github_document
+---
+
+[![Build Status](https://travis-ci.org/oganm/diceSyntax.svg?branch=master)](https://travis-ci.org/oganm/diceSyntax) [![codecov](https://codecov.io/gh/oganm/diceSyntax/branch/master/graph/badge.svg)](https://codecov.io/gh/oganm/diceSyntax)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+devtools::load_all()
+```
+
+
+diceSyntax
+=================
+
+```{r}
+roll('4d6') # roll 4d6
+
+roll('4d6k3') # roll 4d6 keep 3 highest
+
+roll('4d6kl3') # roll 4d6 keep lowest 3
+
+roll('4d6d1') # roll 4d6 drop 1 lowest
+
+roll('4d6dh1') # roll 4d6 drop highest 1
+
+roll('4d6+3') # roll 4d6 add 3
+
+roll('4d6r1r2') # roll 4d6 reroll 1s and 2s
+
+roll('4d6r<2') # same as above
+
+roll('4d6r1ro2') # roll 4d6 reroll 1s but reroll 2s only once
+
+r('1d6') # shortcut function
+
+ri(r1d6) # non standard evaluation
+
+```

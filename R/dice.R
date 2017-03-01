@@ -1,8 +1,11 @@
 #' @export
 insertRoll = function(){
-    rstudioapi::insertText(' %>% (diceSyntax::roll)')
+    rstudioapi::insertText('ri(r')
 }
 
+#' Dice with non-standard evaluation
+#' @param dice Same as \code{\link{roll}} but not in quotes and always starts with an r
+#' @param vocal Should it print individual rolls
 #' @export
 ri = function(dice,vocal = TRUE){
     dice = substitute(dice) %>% as.character()
@@ -13,6 +16,10 @@ ri = function(dice,vocal = TRUE){
     roll(dice,vocal)
 }
 
+#' Roll a dice
+#' @description Rolls the dice described as a string
+#' @param dice character. description of the dice to be rolled. 4d6 rolls four six sided dice. 4d6+3 adds 3 to the result. 4d6k3 keeps the highest 3 dice. 4d6d1 drops the lowest one dice. 4d6kl3 keeps the lowest 3 dice. 4d6dh1 drops the highest 1 dice. 4d6r1 rerolls all 1s. 4d6ro1 rerolls 1s once. 4df rolls fate dice.
+#' @param vocal Should it print individual rolls
 #' @export
 roll = function(dice, vocal=TRUE){
     rollingRules = list()
