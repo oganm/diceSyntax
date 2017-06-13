@@ -34,6 +34,6 @@ roll('4d6r1ro2') # roll 4d6 reroll 1s but reroll 2s only once
 
 r('1d6') # shortcut function
 
-ri(r1d6) # non standard evaluation
+r(r1d6) # non standard evaluation
 
 ```

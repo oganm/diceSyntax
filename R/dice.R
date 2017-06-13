@@ -1,19 +1,6 @@
 #' @export
 insertRoll = function(){
-    rstudioapi::insertText('ri(r')
-}
-
-#' Dice with non-standard evaluation
-#' @param dice Same as \code{\link{roll}} but not in quotes and always starts with an r
-#' @param vocal Should it print individual rolls
-#' @export
-ri = function(dice,vocal = TRUE){
-    dice = substitute(dice) %>% as.character()
-    if(length(dice)>1){
-        dice = paste0(dice[2],dice[1],dice[3])
-    }
-    dice %<>% stringr::str_replace('^r|R','')
-    roll(dice,vocal)
+    rstudioapi::insertText('r(r')
 }
 
 #' Roll a dice
@@ -21,7 +8,12 @@ ri = function(dice,vocal = TRUE){
 #' @param dice character. description of the dice to be rolled. 4d6 rolls four six sided dice. 4d6+3 adds 3 to the result. 4d6k3 keeps the highest 3 dice. 4d6d1 drops the lowest one dice. 4d6kl3 keeps the lowest 3 dice. 4d6dh1 drops the highest 1 dice. 4d6r1 rerolls all 1s. 4d6ro1 rerolls 1s once. 4df rolls fate dice.
 #' @param vocal Should it print individual rolls
 #' @export
-roll = function(dice, vocal=TRUE){
+roll = function(dice, critMark = TRUE,vocal=TRUE){
+    dice = as.character(substitute(dice))
+    if(length(dice)>1){
+        dice = paste0(dice[2],dice[1],dice[3])
+    }
+    dice %<>% stringr::str_replace('^r|R','')
     rollingRules = list()
     validTokens = "[dkscrf+\\-!DKSCRF]"
     dice %<>% tolower  %>% gsub(pattern = '\\s',replacement = '',x = .)
@@ -141,6 +133,7 @@ roll = function(dice, vocal=TRUE){
               rollingRules$add,
               rollingRules$reroll,
               rollingRules$rerollOnce,
+              critMark,
               vocal)
 
 }
@@ -158,13 +151,18 @@ rollParam = function(diceCount,
                      add = 0,
                      reroll = c(),
                      rerollOnce = c(),
+                     critMark = TRUE,
                      vocal=TRUE){
     resample <- function(x, ...) x[sample.int(length(x), ...)]
 
     if(!fate){
         dice = resample((1:diceSide)[!1:diceSide %in% reroll],diceCount,replace=TRUE)
+        minValue = 1
+        maxValue = diceSide
     } else{
         dice = resample((-1:1)[!-1:1 %in% reroll],diceCount,replace=TRUE)
+        minValue = NA
+        maxValue = NA
     }
 
     if(!is.null(dropDice)){
@@ -178,14 +176,21 @@ rollParam = function(diceCount,
             drop = sort(drop)
         }
     }
-
+    result = sum(dice) + add
     if(vocal){
+        if(critMark){
+            crits = dice %in% c(minValue,maxValue)
+            dice[crits] = glue::glue('*{dice[crits]}*')
+        }
         print(paste('Rolls: [',paste(dice,collapse=' '),']'))
         if(!is.null(dropDice)){
+            if(critMark){
+                crits = drop %in% c(minValue,maxValue)
+                drop[crits] = glue::glue('*{drop[crits]}*')
+            }
             print(paste('Dropped: [',paste(drop,collapse=' '),']'))
         }
     }
-    result = sum(dice) + add
     return(result)
 }
 

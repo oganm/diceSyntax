@@ -11,7 +11,8 @@ Imports:
     stringr,
     rstudioapi,
     ggplot2,
-    magrittr
+    magrittr,
+    glue
 Encoding: UTF-8
 LazyData: true
 Suggests: testthat

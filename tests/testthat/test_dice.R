@@ -45,11 +45,11 @@ test_that('reroll', {
 
 
 test_that('direct entry', {
-    result = sapply(1:1000,function(x){ri(r10d6r1r2r3r4r5,vocal = FALSE)}) %>% mean
+    result = sapply(1:1000,function(x){r(r10d6r1r2r3r4r5,vocal = FALSE)}) %>% mean
     expect_equal(result,60)
 
 
-    result = sapply(1:1000,function(x){ri(r10d6ro1,vocal = FALSE)}) %>% mean
+    result = sapply(1:1000,function(x){r(r10d6ro1,vocal = FALSE)}) %>% mean
     expect_gt(result,39)
     expect_lt(result,41)
 
