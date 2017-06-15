@@ -5,15 +5,20 @@ insertRoll = function(){
 
 #' Roll a dice
 #' @description Rolls the dice described as a string
-#' @param dice character. description of the dice to be rolled. 4d6 rolls four six sided dice. 4d6+3 adds 3 to the result. 4d6k3 keeps the highest 3 dice. 4d6d1 drops the lowest one dice. 4d6kl3 keeps the lowest 3 dice. 4d6dh1 drops the highest 1 dice. 4d6r1 rerolls all 1s. 4d6ro1 rerolls 1s once. 4df rolls fate dice.
+#' @param dice character. If a variable name, the variable must not be a valid dice syntax that starts with an r or the function will just roll that dice instead (eg. r4d6). description of the dice to be rolled. 4d6 rolls four six sided dice. 4d6+3 adds 3 to the result. 4d6k3 keeps the highest 3 dice. 4d6d1 drops the lowest one dice. 4d6kl3 keeps the lowest 3 dice. 4d6dh1 drops the highest 1 dice. 4d6r1 rerolls all 1s. 4d6ro1 rerolls 1s once. 4df rolls fate dice.
 #' @param vocal Should it print individual rolls
 #' @export
 roll = function(dice, critMark = TRUE,vocal=TRUE){
-    dice = as.character(substitute(dice))
-    if(length(dice)>1){
-        dice = paste0(dice[2],dice[1],dice[3])
+    diceSub = as.character(substitute(dice))
+    if(length(diceSub)>1){
+        diceSub = paste0(dice[2],dice[1],dice[3])
     }
-    dice %<>% stringr::str_replace('^r|R','')
+    diceSub %<>% stringr::str_replace('^r|R','')
+
+    if(grepl(pattern = '[0-9]+?d[0-9]+',diceSub)){
+        dice = diceSub
+    }
+
     rollingRules = list()
     validTokens = "[dkscrf+\\-!DKSCRF]"
     dice %<>% tolower  %>% gsub(pattern = '\\s',replacement = '',x = .)
