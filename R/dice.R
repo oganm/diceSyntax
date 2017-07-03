@@ -9,7 +9,12 @@ insertRoll = function(){
 #' @param vocal Should it print individual rolls
 #' @export
 roll = function(dice, critMark = TRUE,vocal=TRUE){
-    dice = as.character(substitute(dice))
+    diceSubstitute = as.character(substitute(dice))
+
+    if(any(grepl('^r[0-9]d[0-9]',diceSubstitute))){
+        dice = diceSubstitute
+    }
+
     if(length(dice)>1){
         dice = paste0(dice[2],dice[1],dice[3])
     }

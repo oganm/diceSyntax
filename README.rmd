@@ -35,5 +35,14 @@ roll('4d6r1ro2') # roll 4d6 reroll 1s but reroll 2s only once
 r('1d6') # shortcut function
 
 r(r1d6) # non standard evaluation
+```
 
+While `roll` and `r` allows non standard evaluation, variable names for character values can be used as long as they don't match the following regex: `^r[0-9]d[0-9]` or the variable name will be interpreted as a dice roll.
+
+```{r}
+myRoll = '10d10'
+r4d6 = '10d10'
+
+r(myRoll)
+r(r4d6)
 ```
