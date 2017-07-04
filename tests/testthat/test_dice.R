@@ -53,4 +53,10 @@ test_that('direct entry', {
     expect_gt(result,39)
     expect_lt(result,41)
 
+    myRoll = '10d10'
+    r4d6 = '10d10'
+
+    expect_equal(length(r(myRoll,returnRolls= TRUE)$dice),10)
+    expect_equal(length(r(r4d6,returnRolls = TRUE)$dice),4)
+
 })
