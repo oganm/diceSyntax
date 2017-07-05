@@ -7,6 +7,7 @@ insertRoll = function(){
 #' @description Rolls the dice described as a string
 #' @param dice character. If a variable name, the variable must not be a valid dice syntax that starts with an r or the function will just roll that dice instead (eg. r4d6). description of the dice to be rolled. 4d6 rolls four six sided dice. 4d6+3 adds 3 to the result. 4d6k3 keeps the highest 3 dice. 4d6d1 drops the lowest one dice. 4d6kl3 keeps the lowest 3 dice. 4d6dh1 drops the highest 1 dice. 4d6r1 rerolls all 1s. 4d6ro1 rerolls 1s once. 4df rolls fate dice.
 #' @param vocal Should it print individual rolls
+#' @param returnRolls Logical. If true a list will be returned that includes rolled and dropped dice as well as the sum of accepted dice
 #' @export
 roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
     diceSubstitute = as.character(substitute(dice))
@@ -188,7 +189,7 @@ rollParam = function(diceCount,
     result = sum(dice) + add
     if(vocal){
         dicePrint = dice
-        dropPrint = dice
+        dropPrint = drop
         if(critMark){
             crits = dice %in% c(minValue,maxValue)
             dicePrint[crits] = glue::glue('*{dice[crits]}*')
