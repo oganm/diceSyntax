@@ -139,7 +139,7 @@ roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
               rollingRules$dropDice,
               rollingRules$dropLowest,
               rollingRules$add,
-              rollingRules$reroll,
+              rollingRules[['reroll']],
               rollingRules$rerollOnce,
               critMark,
               vocal,
@@ -167,12 +167,16 @@ rollParam = function(diceCount,
 
     if(!fate){
         dice = resample((1:diceSide)[!1:diceSide %in% reroll],diceCount,replace=TRUE)
-        minValue = 1
+        minValue = min((1:diceSide)[!1:diceSide %in% reroll])
         maxValue = diceSide
     } else{
         dice = resample((-1:1)[!-1:1 %in% reroll],diceCount,replace=TRUE)
         minValue = NA
         maxValue = NA
+    }
+
+    if(length(rerollOnce)>0){
+        dice[dice %in% rerollOnce] = resample((1:diceSide)[!1:diceSide %in% reroll],sum(dice %in% rerollOnce),replace=TRUE)
     }
 
     if(!is.null(dropDice)){
