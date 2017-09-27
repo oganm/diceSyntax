@@ -20,116 +20,7 @@ roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
         dice = paste0(dice[2],dice[1],dice[3])
     }
 
-    dice %<>% stringr::str_replace('^r|R','')
-
-    rollingRules = list()
-    validTokens = "[dkscrf+\\-!DKSCRF]"
-    dice %<>% tolower  %>% gsub(pattern = '\\s',replacement = '',x = .)
-    rollingRules$diceCount = stringr::str_extract(string = dice,pattern =  '^[0-9]+?(?=d)') %>% as.integer()
-    otherTokens =  stringr::str_extract_all(string = dice,
-                                            pattern =  paste0(validTokens,'.*?((?=',validTokens, ')|$)')) %>% unlist
-
-
-    rollingRules$diceSide = stringr::str_extract(string = otherTokens[1],pattern =  '(?<=d)[0-9f]*')
-    if( rollingRules$diceSide == '' &  otherTokens[2] == 'f'){
-        rollingRules$diceSide = 3
-        rollingRules$fate = TRUE
-        otherTokens = otherTokens[-1]
-    } else{
-        rollingRules$fate = FALSE
-    }
-
-    if(rollingRules$diceSide == ''){
-        stop('First parameter has to be dice side (eg. "1d6")')
-    }
-
-    otherTokens = otherTokens[-1]
-
-    # sort the dice if s token is added ------------
-    if('s' %in%  otherTokens){
-        rollingRules$sort = TRUE
-    } else{
-        rollingRules$sort = FALSE
-    }
-
-    # drop dice if rules are given --------------
-    dropRules = otherTokens %>% {.[grep(pattern = 'd|k',.)]}
-    if(length(dropRules)>1){
-        stop('Conflicting keep options given')
-    } else if(length(dropRules)==0){
-        rollingRules$dropDice = NULL
-        rollingRules$dropLowest = TRUE # default configuration
-    } else{
-        dropNo = stringr::str_extract(string = dropRules,pattern =  '[0-9]+') %>% as.integer
-        if(length(dropNo)==0){
-            stop('Keep options require number of dice to keep or drop (eg. 10d6k3 10d6d3)')
-        }
-        rollingRules$dropDice = switch(substr(dropRules,1,1),
-                                       d =  dropNo,
-                                       k =  rollingRules$diceCount-dropNo)
-        rollingRules$dropLowest = !(grepl(pattern = 'dh',dropRules) | grepl(pattern ='kl', dropRules))
-    }
-
-    # additon or substraction -----------------
-    aditionRules = otherTokens %>% {.[grep(pattern = '\\+|-',.)]} %>% as.integer()
-    if(any(is.na(aditionRules))){
-        stop('"-" and "+" should always be followed by integers')
-    }
-    if(length(aditionRules)!=0){
-        rollingRules$add = sum(aditionRules)
-    } else{
-        rollingRules$add = 0
-    }
-
-
-    # reroll ---------------------
-    rerollDetermine = function(x){
-        number=  stringr::str_extract(x,'[0-9]*$')
-        if(grepl('<|>',x) & number ==''){
-            stop('Rerolling with "<" or ">" identifiers requires an integer')
-        } else if(grepl('<',x) & grepl('>',x)){
-            stop('Single rerolling clause can only have one of "<" or ">"')
-        } else if(!grepl('<|>',x) & number ==''){
-            reroll = 1
-            if (rollingRules$fate){
-                reroll = -1
-            }
-        } else if(!grepl('<|>',x) & number!=''){
-            reroll = number %>% as.integer()
-        } else if (grepl('<',x)){
-            reroll = 1:number
-            if(rollingRules$fate){
-                reroll = -1:number
-            }
-        } else if(grepl('>',x)){
-            reroll = number:rollingRules$diceSide
-            if(rollingRules$fate){
-                reroll = number:1
-            }
-        }
-        return(reroll)
-    }
-
-    rerollRules = otherTokens %>% {.[grep(pattern = 'r(?!o)',.,perl=TRUE)]}
-
-    reroll = rerollRules %>% lapply(rerollDetermine) %>% unlist
-    dicePossibilities = 1:rollingRules$diceSide
-    if(rollingRules$fate){
-        dicePossibilities = -1:1
-    }
-    if(all(dicePossibilities %in% reroll)){
-        stop('You cannot reroll every possible result')
-    }
-    rollingRules$reroll = reroll
-
-
-    rerollOnceRules = otherTokens %>% {.[grep(pattern = 'ro',.,perl=TRUE)]}
-    rerollOnce = rerollOnceRules %>% lapply(rerollDetermine) %>% unlist
-    if(length(intersect(reroll,rerollOnce))>0){
-        warning('Why reroll something once and forever?')
-    }
-    rollingRules$rerollOnce = rerollOnce
-
+    rollingRules = diceParser(dice)
 
     # end
     rollParam(rollingRules$diceCount,
@@ -141,6 +32,7 @@ roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
               rollingRules$add,
               rollingRules[['reroll']],
               rollingRules$rerollOnce,
+              rollingRules$explode,
               critMark,
               vocal,
               returnRolls)
@@ -150,72 +42,6 @@ roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
 #' @export
 r = roll
 
-#' @export
-rollParam = function(diceCount,
-                     diceSide = NULL,
-                     fate = FALSE,
-                     sort = FALSE,
-                     dropDice = NULL,
-                     dropLowest = TRUE,
-                     add = 0,
-                     reroll = c(),
-                     rerollOnce = c(),
-                     critMark = TRUE,
-                     vocal=TRUE,
-                     returnRolls = FALSE){
-    resample <- function(x, ...) x[sample.int(length(x), ...)]
-
-    if(!fate){
-        dice = resample((1:diceSide)[!1:diceSide %in% reroll],diceCount,replace=TRUE)
-        minValue = min((1:diceSide)[!1:diceSide %in% reroll])
-        maxValue = diceSide
-    } else{
-        dice = resample((-1:1)[!-1:1 %in% reroll],diceCount,replace=TRUE)
-        minValue = NA
-        maxValue = NA
-    }
-
-    if(length(rerollOnce)>0){
-        dice[dice %in% rerollOnce] = resample((1:diceSide)[!1:diceSide %in% reroll],sum(dice %in% rerollOnce),replace=TRUE)
-    }
-
-    if(!is.null(dropDice)){
-        drop = dice[order(dice,decreasing = !dropLowest)[1:dropDice] %>% sort]
-        dice =  dice[-order(dice,decreasing = !dropLowest)[1:dropDice] %>% sort]
-    }
-
-    if(sort){
-        dice = sort(dice)
-        if(!is.null(dropDice)){
-            drop = sort(drop)
-        }
-    }
-    result = sum(dice) + add
-    if(vocal){
-        dicePrint = dice
-        dropPrint = drop
-        if(critMark){
-            crits = dice %in% c(minValue,maxValue)
-            dicePrint[crits] = glue::glue('*{dice[crits]}*')
-        }
-        print(paste('Rolls: [',paste(dicePrint,collapse=' '),']'))
-        if(!is.null(dropDice)){
-            if(critMark){
-                crits = drop %in% c(minValue,maxValue)
-                dropPrint[crits] = glue::glue('*{drop[crits]}*')
-            }
-            print(paste('Dropped: [',paste(dropPrint,collapse=' '),']'))
-        }
-    }
-    if(!returnRolls){
-        return(result)
-    } else{
-        if(is.null(dropDice)){
-            drop = NULL
-        }
-        return(list(result = result, dice = dice, drop = drop))
-    }
-}
 
 #' @export
 diceStats = function(dice,n=1000){
@@ -225,6 +51,65 @@ diceStats = function(dice,n=1000){
         ggplot2::geom_density(fill = 'grey')
     mean = mean(rolls)
     return(list(mean,plot))
+}
+
+#' @export
+diceProb = function(dice){
+    rollingRules = diceParser(dice)
+
+    if(!rollingRules$fate){
+        possibleDice = (1:rollingRules$diceSide)[!1:rollingRules$diceSide %in% rollingRules$reroll]
+    } else{
+        possibleDice  = (-1:1)[!-1:1 %in% rollingRules$reroll]
+    }
+
+    baseProb = 1/length(possibleDice)
+
+    # matrix has no reason to be here. it may in the future with exploding though..
+
+    diceProbs = matrix(1/length(possibleDice),
+                       nrow = length(possibleDice),
+                       ncol = rollingRules$diceCount)
+    row.names(diceProbs) = possibleDice
+
+    if(length(rollingRules$rerollOnce)>0){
+        diceProbsToAdd = matrix(0,
+                                nrow = length(possibleDice),
+                                ncol = rollingRules$diceCount)
+        for (x in rollingRules$rerollOnce[rollingRules$rerollOnce %in% possibleDice]){
+            diceProbs[x %>% as.character(),] = 0
+            diceProbsToAdd = diceProbsToAdd + baseProb^2
+        }
+        diceProbs = diceProbs + diceProbsToAdd
+    }
+
+    allPossibs = expand.grid(rep(list(rownames(diceProbs) %>% as.integer()),ncol(diceProbs)))
+
+    probabilities = apply(allPossibs,1,function(x){
+        sapply(seq(ncol(diceProbs)),function(i){
+            diceProbs[x[i] %>% unlist %>% as.character,i]
+        }) %>% prod
+    })
+
+    possibSums = allPossibs %>% apply(1,function(x){
+        dropDice = rollingRules$dropDice
+        dropLowest = rollingRules$dropLowest
+        if(!is.null(dropDice)){
+            drop = x[order(x,decreasing = !dropLowest)[1:dropDice] %>% sort]
+            x =  x[-order(x,decreasing = !dropLowest)[1:dropDice] %>% sort]
+        }
+        sum(x)
+    })
+
+    possibleResults = unique(possibSums)
+
+    resultProbs = possibleResults %>% sapply(function(x){
+        sum(probabilities[possibSums %in% x])
+    })
+
+
+    names(resultProbs) = possibleResults
+    return(resultProbs)
 }
 
 # AC: armor class

@@ -3,6 +3,8 @@
 export("%<>%")
 export("%>%")
 export(animate)
+export(diceParser)
+export(diceProb)
 export(diceStats)
 export(insertRoll)
 export(r)

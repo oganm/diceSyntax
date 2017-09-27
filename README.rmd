@@ -33,6 +33,10 @@ roll('4d6r<2') # same as above
 
 roll('4d6r1ro2') # roll 4d6 reroll 1s but reroll 2s only once
 
+roll('5d2!') # exploding dice
+
+roll('5d2!!') # compounding dice
+
 r('1d6') # shortcut function
 
 r(r1d6) # non standard evaluation
@@ -56,4 +60,14 @@ Other variables that `roll` funciton accepts are
 
 ```{r}
 r(r10d10dl3,returnRolls = TRUE, vocal = FALSE)
+```
+
+Dice stats
+----------------
+
+Probabilities of outcomes can be calculated with `diceProb` function
+
+```{r}
+diceProb('4d6d1') %>% plot
+
 ```
