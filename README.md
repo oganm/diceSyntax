@@ -158,7 +158,7 @@ Dice stats
 Probabilities of outcomes can be calculated with `diceProb` function
 
 ``` r
-diceProb('4d6d1') %>% plot
+diceProb('4d6d1') %>% plot(names(.) %>% as.numeric(),.)
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-4-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-4-1.png)

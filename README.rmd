@@ -68,6 +68,6 @@ Dice stats
 Probabilities of outcomes can be calculated with `diceProb` function
 
 ```{r}
-diceProb('4d6d1') %>% plot
+diceProb('4d6d1') %>% plot(names(.) %>% as.numeric(),.)
 
 ```
