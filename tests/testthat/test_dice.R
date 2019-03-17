@@ -60,3 +60,11 @@ test_that('direct entry', {
     expect_equal(length(r(r4d6,returnRolls = TRUE)$dice),4)
 
 })
+
+test_that('swarm',{
+    sapply(1:1000, function(x){
+        sum(animate(19))
+    }) %>% mean -> result
+    expect_gt(result,33)
+    expect_lt(result,35)
+})

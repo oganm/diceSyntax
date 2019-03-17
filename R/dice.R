@@ -10,15 +10,6 @@ insertRoll = function(){
 #' @param returnRolls Logical. If true a list will be returned that includes rolled and dropped dice as well as the sum of accepted dice
 #' @export
 roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
-    diceSubstitute = as.character(substitute(dice))
-
-    if(any(grepl('^r[0-9]+d[0-9]+',diceSubstitute))){
-        dice = diceSubstitute
-    }
-
-    if(length(dice)>1){
-        dice = paste0(dice[2],dice[1],dice[3])
-    }
 
     rollingRules = diceParser(dice)
 
@@ -39,6 +30,9 @@ roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
 
 }
 
+#' Roll a dice
+#'
+#' @description  Alias to \code{\link{roll}}
 #' @export
 r = roll
 
@@ -112,6 +106,55 @@ diceProb = function(dice){
     return(resultProbs)
 }
 
+#' Simulate swarm attack
+#'
+#' @description  simulates attack by a swarm to an opponent of known AC
+#'
+#' @param AC AC of the opponent
+#' @param count number of individuals in the swarm
+#' @param damageDice damage dice to roll
+#' @param attackBonus bonus to hit
+#' @param damageBonus bonus to damage
+#' @param advantage N = normal, A = with advantage, D = with disadvantage.
+#' @export
+swarm = function(AC, count, damageDice, attackBonus = 0, damageBonus = 0, advantage = c('N','D','A')){
+    advantage = match.arg(advantage)
+
+    rolls = rollParam(count,diceSide = 20,returnRolls = TRUE,vocal = FALSE)$dice
+    if(advantage != 'N'){
+        rerolls = rollParam(count,diceSide = 20,returnRolls = TRUE, vocal = FALSE)$dice
+        if(advantage == 'A'){
+            rolls = cbind(rolls,rerolls) %>% apply(1,max)
+        } else if(advantage =='D'){
+            rolls = cbind(rolls,rerolls) %>% apply(1,min)
+        }
+    }
+    rolls = rolls + attackBonus
+
+    hits = rolls[rolls >= AC | rolls == 1]
+
+    sapply(hits,function(x){
+        if (x == 20){
+            rollingRules = diceParser(damageDice)
+            rollParam(rollingRules$diceCount*2,
+                      rollingRules$diceSide,
+                      rollingRules$fate,
+                      rollingRules$sort,
+                      rollingRules$dropDice,
+                      rollingRules$dropLowest,
+                      rollingRules$add,
+                      rollingRules[['reroll']],
+                      rollingRules$rerollOnce,
+                      rollingRules$explode,
+                      critMark = FALSE,
+                      vocal = FALSE,
+                      returnRolls = FALSE) + damageBonus
+        } else{
+            roll(damageDice,vocal = FALSE) + damageBonus
+        }
+    })
+}
+
 # AC: armor class
 # bonus: attack bonus of the group
 # count: number of entities in the group
@@ -120,34 +163,6 @@ diceProb = function(dice){
 # damageBonus = bonus to damage
 # default settings are for animating 10 tiny objects but should work with any mob of identical creatures
 #' @export
-animate = function(AC, bonus = 8, count = 10, advantage = 'N', dice = '1d4' , damageBonus = 4){
-    out = sapply(1:count, function(x){
-        out = sample(1:20,size = 1)
-        if (advantage == 'A'){
-            out2 = sample(1:20,size = 1)
-            out = max(out,out2)
-        } else if(advantage == 'D'){
-            out2 = sample(1:20,size = 1)
-            out = min(out,out2)
-        }
-        return(out)
-    })
-
-    diceCount = as.integer(regmatches(dice,regexpr(".*?(?=d)",dice,perl = T)))
-    diceSide = as.integer(regmatches(dice,regexpr("(?<=d).*",dice,perl = T)))
-
-    sum(
-        sapply(out,function(x){
-            if(x == 20){
-                return(sum(sample(1:diceSide,diceCount*2,replace=T)) + damageBonus)
-            } else if(x==1){
-                return(0)
-            }else{
-                if ((x + bonus - AC) >= 0){
-                    return(sample(1:diceSide,diceCount,replace=T) + damageBonus)
-                } else {
-                    return(0)
-                }
-            }
-        }))
+animate = function(AC, count = 10, damageDice = '1d4+4', attackBonus = 8, damageBonus = 0, advantage = c('N','D','A')){
+    swarm(AC, count, damageDice, attackBonus, damageBonus,advantage)
 }

@@ -104,35 +104,6 @@ r('1d6') # shortcut function
 
     ## [1] 5
 
-``` r
-r(r1d6) # non standard evaluation
-```
-
-    ## [1] "Rolls: [ *1* ]"
-
-    ## [1] 1
-
-While `roll` and `r` allows non standard evaluation, variable names for character values can be used as long as they don't match the following regex: `^r[0-9]+d[0-9]+` or the variable name will be interpreted as a dice roll.
-
-``` r
-myRoll = '10d10'
-r4d6 = '10d10'
-
-r(myRoll)
-```
-
-    ## [1] "Rolls: [ 5 3 8 3 *10* 8 *10* 3 *10* 2 ]"
-
-    ## [1] 62
-
-``` r
-r(r4d6)
-```
-
-    ## [1] "Rolls: [ 4 *6* 5 4 ]"
-
-    ## [1] 19
-
 Other variables that `roll` funciton accepts are
 
 -   `critMark`: `TRUE` by default. If `TRUE` it adds stars around the dice roll in printed output if it is max or min value for the dice
@@ -140,17 +111,17 @@ Other variables that `roll` funciton accepts are
 -   `returnRolls`: `FALSE` by default. If `TRUE` returns a list instead of an integer that includes rolled and dropped dice along with the dice sum
 
 ``` r
-r(r10d10dl3,returnRolls = TRUE, vocal = FALSE)
+r("10d10dl3",returnRolls = TRUE, vocal = FALSE)
 ```
 
     ## $result
-    ## [1] 49
+    ## [1] 54
     ## 
     ## $dice
-    ## [1]  4  7 10  7  6  9  6
+    ## [1]  5  8 10  8 10  3 10
     ## 
     ## $drop
-    ## [1] 4 1 2
+    ## [1] 1 3 3
 
 Dice stats
 ----------
@@ -161,4 +132,4 @@ Probabilities of outcomes can be calculated with `diceProb` function
 diceProb('4d6d1') %>% plot(names(.) %>% as.numeric(),.)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
