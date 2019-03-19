@@ -131,7 +131,7 @@ swarm = function(AC, count, damageDice, attackBonus = 0, damageBonus = 0, advant
     }
     rolls = rolls + attackBonus
 
-    hits = rolls[rolls >= AC | rolls == 1]
+    hits = rolls[rolls >= AC & (rolls-attackBonus)!=1]
 
     sapply(hits,function(x){
         if (x == 20){
