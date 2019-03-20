@@ -1,11 +1,38 @@
 #' @export
+compositeDiceParser = function(dice){
+    diceComponents = strsplit(dice,'\\+|-') %>% {.[[1]]}
+    componentSigns = c('+',stringr::str_extract_all(dice,'\\+|-') %>% {.[[1]]})
+    rollingRules = diceComponents %>% lapply(diceParser)
+    return(list(rollingRules = rollingRules,
+                signs = componentSigns))
+}
+
+
+#' @export
 diceParser = function(dice){
     dice %<>% stringr::str_replace('^r|R','')
+
 
     rollingRules = list()
     validTokens = "[dkscrf+\\-!DKSCRF]"
     dice %<>% tolower  %>% gsub(pattern = '\\s',replacement = '',x = .)
+    rollingRules$diceString = dice
+    justInteger = suppressWarnings(as.integer(dice))
+    if(!is.na(justInteger)){
+        rollingRules$add = justInteger
+        rollingRules$diceCount = 0
+        rollingRules$diceSide = 0
+        rollingRules$fate = FALSE
+        rollingRules$sort = FALSE
+        rollingRules$explode = 0
+        return(rollingRules)
+    }
+
     rollingRules$diceCount = stringr::str_extract(string = dice,pattern =  '^[0-9]+?(?=d)') %>% as.integer()
+    if(is.na(rollingRules$diceCount) & grepl('^d',dice)){
+        rollingRules$diceCount = 1
+        dice = paste0('1',dice)
+    }
     otherTokens =  stringr::str_extract_all(string = dice,
                                             pattern =  paste0(validTokens,'.*?((?=',validTokens, ')|$)')) %>% unlist
 
@@ -134,6 +161,7 @@ rollParam =  function(diceCount,
                       reroll = c(),
                       rerollOnce = c(),
                       explode = 0,
+                      diceString = '',
                       critMark = TRUE,
                       vocal=TRUE,
                       returnRolls = FALSE){
@@ -181,14 +209,14 @@ rollParam =  function(diceCount,
         }
     }
     result = sum(dice) + add
-    if(vocal){
+    if(vocal & diceCount>0){
         dicePrint = dice
         dropPrint = drop
         if(critMark){
             crits = dice %in% c(minValue,maxValue)
             dicePrint[crits] = glue::glue('*{dice[crits]}*')
         }
-        print(paste('Rolls: [',paste(dicePrint,collapse=' '),']'))
+        print(paste0('Rolls: [ ',paste(dicePrint,collapse=' '),' ] (',diceString,')'))
         if(!is.null(dropDice)){
             if(critMark){
                 crits = drop %in% c(minValue,maxValue)

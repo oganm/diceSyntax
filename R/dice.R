@@ -11,22 +11,33 @@ insertRoll = function(){
 #' @export
 roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
 
-    rollingRules = diceParser(dice)
+    rollingRules = compositeDiceParser(dice)
 
-    # end
-    rollParam(rollingRules$diceCount,
-              rollingRules$diceSide,
-              rollingRules$fate,
-              rollingRules$sort,
-              rollingRules$dropDice,
-              rollingRules$dropLowest,
-              rollingRules$add,
-              rollingRules[['reroll']],
-              rollingRules$rerollOnce,
-              rollingRules$explode,
-              critMark,
-              vocal,
-              returnRolls)
+    rollingRules$rollingRules %>% lapply(function(rules){
+        rollParam(rules$diceCount,
+                  rules$diceSide,
+                  rules$fate,
+                  rules$sort,
+                  rules$dropDice,
+                  rules$dropLowest,
+                  rules$add,
+                  rules[['reroll']],
+                  rules$rerollOnce,
+                  rules$explode,
+                  rules$diceString,
+                  critMark,
+                  vocal,
+                  returnRolls)
+    }) -> rolls
+
+    if(!returnRolls){
+        return(paste0(rollingRules$signs,rolls) %>% as.integer %>% sum)
+    } else{
+        names(rolls) = rollingRules$rollingRules %>% purrr::map_chr('diceString')
+        result = rolls %>% purrr::map_dbl('result') %>% paste0(rollingRules$signs,.) %>% as.integer() %>% sum
+        rolls$result = result
+        return(rolls)
+    }
 
 }
 

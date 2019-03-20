@@ -1,5 +1,6 @@
 context('Dice check')
 
+set.seed(1)
 
 test_that('basic dice', {
     result = roll('100d10',vocal = FALSE)
@@ -44,22 +45,6 @@ test_that('reroll', {
 })
 
 
-test_that('direct entry', {
-    result = sapply(1:1000,function(x){r(r10d6r1r2r3r4r5,vocal = FALSE)}) %>% mean
-    expect_equal(result,60)
-
-
-    result = sapply(1:1000,function(x){r(r10d6ro1,vocal = FALSE)}) %>% mean
-    expect_gt(result,39)
-    expect_lt(result,41)
-
-    myRoll = '10d10'
-    r4d6 = '10d10'
-
-    expect_equal(length(r(myRoll,returnRolls= TRUE)$dice),10)
-    expect_equal(length(r(r4d6,returnRolls = TRUE)$dice),4)
-
-})
 
 test_that('swarm',{
     sapply(1:1000, function(x){

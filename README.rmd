@@ -15,6 +15,8 @@ diceSyntax
 =================
 
 ```{r}
+roll('d6') # roll d6
+
 roll('4d6') # roll 4d6
 
 roll('4d6k3') # roll 4d6 keep 3 highest
@@ -36,6 +38,8 @@ roll('4d6r1ro2') # roll 4d6 reroll 1s but reroll 2s only once
 roll('5d2!') # exploding dice
 
 roll('5d2!!') # compounding dice
+
+roll('6d6+4d4-3d5') # multiple rolls
 
 r('1d6') # shortcut function
 
