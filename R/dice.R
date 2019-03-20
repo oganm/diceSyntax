@@ -142,24 +142,28 @@ swarm = function(AC, count, damageDice, attackBonus = 0, damageBonus = 0, advant
     }
     rolls = rolls + attackBonus
 
-    hits = rolls[rolls >= AC & (rolls-attackBonus)!=1]
+    hits = rolls[(rolls >= AC & (rolls-attackBonus)!=1)|((rolls-attackBonus)==20)]
 
     sapply(hits,function(x){
-        if (x == 20){
-            rollingRules = diceParser(damageDice)
-            rollParam(rollingRules$diceCount*2,
-                      rollingRules$diceSide,
-                      rollingRules$fate,
-                      rollingRules$sort,
-                      rollingRules$dropDice,
-                      rollingRules$dropLowest,
-                      rollingRules$add,
-                      rollingRules[['reroll']],
-                      rollingRules$rerollOnce,
-                      rollingRules$explode,
-                      critMark = FALSE,
-                      vocal = FALSE,
-                      returnRolls = FALSE) + damageBonus
+        if ((x-attackBonus) == 20){
+            rollingRules = compositeDiceParser(damageDice)
+            rollingRules$rollingRules %>% lapply(function(rules){
+                rollParam(rules$diceCount*2,
+                          rules$diceSide,
+                          rules$fate,
+                          rules$sort,
+                          rules$dropDice,
+                          rules$dropLowest,
+                          rules$add,
+                          rules[['reroll']],
+                          rules$rerollOnce,
+                          rules$explode,
+                          rules$diceString,
+                          critMark=FALSE,
+                          vocal= FALSE,
+                          returnRolls = FALSE)
+                }) -> rolls
+            paste0(rollingRules$signs,rolls) %>% as.integer %>% sum %>% {.+damageBonus}
         } else{
             roll(damageDice,vocal = FALSE) + damageBonus
         }
