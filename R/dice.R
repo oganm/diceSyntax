@@ -144,6 +144,10 @@ swarm = function(AC, count, damageDice, attackBonus = 0, damageBonus = 0, advant
 
     hits = rolls[(rolls >= AC & (rolls-attackBonus)!=1)|((rolls-attackBonus)==20)]
 
+    if(length(hits) == 0){
+        return(numeric(0))
+    }
+
     sapply(hits,function(x){
         if ((x-attackBonus) == 20){
             rollingRules = compositeDiceParser(damageDice)
