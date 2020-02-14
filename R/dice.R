@@ -29,13 +29,18 @@ roll = function(dice, critMark = TRUE,vocal=TRUE,returnRolls = FALSE){
                   vocal,
                   returnRolls)
     }) -> rolls
+    signs = rollingRules$sign %>% paste0(.,1) %>% as.integer() %>% sign
 
     if(!returnRolls){
-        return(paste0(rollingRules$signs,rolls) %>% as.integer %>% sum)
+        numbers = rolls %>% unlist
+        return(sum(signs * numbers))
     } else{
-        names(rolls) = rollingRules$rollingRules %>% purrr::map_chr('diceString')
-        result = rolls %>% purrr::map_dbl('result') %>% paste0(rollingRules$signs,.) %>% as.integer() %>% sum
-        rolls$result = result
+        numbers = rolls %>% purrr::map_dbl('result')
+        rolls$result = sum(numbers*signs)
+
+
+        names(rolls)[-length(rolls)] = rollingRules$rollingRules %>% purrr::map_chr('diceString')
+
         return(rolls)
     }
 
@@ -115,6 +120,11 @@ diceProb = function(dice){
 
     names(resultProbs) = possibleResults
     return(resultProbs)
+}
+
+expectedValue = function(dice){
+    probs = diceProb(dice)
+    sum(as.integer(names(probs)) * probs)
 }
 
 #' Simulate swarm attack
