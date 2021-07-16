@@ -64,16 +64,21 @@ diceStats = function(dice,n=1000){
 }
 
 #' @export
-diceProb = function(dice){
+diceProb = function(dice, explodeDepth = 4){
     rollingRules = diceParser(dice)
 
     if(!rollingRules$fate){
         possibleDice = (1:rollingRules$diceSide)[!1:rollingRules$diceSide %in% rollingRules['reroll']]
     } else{
-        possibleDice  = (-1:1)[!-1:1 %in% rollingRules['reroll']]
+        stop('Fate dice is not supported')
     }
 
+
     baseProb = 1/length(possibleDice)
+
+    if(rollingRules$explode>0){
+        possibleDice = possibleDice
+    }
 
     # matrix has no reason to be here. it may in the future with exploding though..
 

@@ -173,6 +173,7 @@ rollParam =  function(diceCount,
         minValue = min((1:diceSide)[!1:diceSide %in% reroll])
         maxValue = diceSide
     } else{
+        stop('Fate dice is not supported')
         dice = resample((-1:1)[!-1:1 %in% reroll],diceCount,replace=TRUE)
         minValue = NA
         maxValue = NA
