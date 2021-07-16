@@ -76,10 +76,6 @@ diceProb = function(dice, explodeDepth = 4){
 
     baseProb = 1/length(possibleDice)
 
-    if(rollingRules$explode>0){
-        possibleDice = possibleDice
-    }
-
     # matrix has no reason to be here. it may in the future with exploding though..
 
     diceProbs = matrix(1/length(possibleDice),
@@ -124,6 +120,17 @@ diceProb = function(dice, explodeDepth = 4){
 
 
     names(resultProbs) = possibleResults
+    if(rollingRules$explode>0){
+        explodedResults = resultProbs
+        for(i in seq_len(explodeDepth)){
+            addedProbs = explodedResults[length(explodedResults)]*resultProbs
+            names(addedProbs) = as.numeric(names(resultProbs)) + max(as.numeric(names(explodedResults)))
+
+            explodedResults = c(explodedResults[-length(explodedResults)],addedProbs)
+        }
+        resultProbs = explodedResults
+    }
+
     return(resultProbs)
 }
 
