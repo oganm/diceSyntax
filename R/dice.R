@@ -68,9 +68,9 @@ diceProb = function(dice){
     rollingRules = diceParser(dice)
 
     if(!rollingRules$fate){
-        possibleDice = (1:rollingRules$diceSide)[!1:rollingRules$diceSide %in% rollingRules$reroll]
+        possibleDice = (1:rollingRules$diceSide)[!1:rollingRules$diceSide %in% rollingRules['reroll']]
     } else{
-        possibleDice  = (-1:1)[!-1:1 %in% rollingRules$reroll]
+        possibleDice  = (-1:1)[!-1:1 %in% rollingRules['reroll']]
     }
 
     baseProb = 1/length(possibleDice)
