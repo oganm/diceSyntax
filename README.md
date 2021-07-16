@@ -93,81 +93,7 @@ roll('4d6r1ro2') # roll 4d6 reroll 1s but reroll 2s only once
 roll('5d2!') # exploding dice
 ```
 
-    ## Called from: rollParam(rules$diceCount, rules$diceSide, rules$fate, rules$sort, 
-    ##     rules$dropDice, rules$dropLowest, rules$add, rules[["reroll"]], 
-    ##     rules$rerollOnce, rules$explode, rules$diceString, critMark, 
-    ##     vocal, returnRolls)
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#188: dice = lapply(dice, function(x) {
-    ##     manyRolls = c()
-    ##     while (x == max(possibleDice)) {
-    ##         manyRolls = c(manyRolls, x)
-    ##         x = resample(possibleDice, 1)
-    ##     }
-    ##     x = c(manyRolls, x)
-    ##     if (explode == 2) {
-    ##         x = sum(x)
-    ##     }
-    ##     return(x)
-    ## }) %>% unlist
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#202: if (!is.null(dropDice)) {
-    ##     drop = dice[order(dice, decreasing = !dropLowest)[1:dropDice] %>% 
-    ##         sort]
-    ##     dice = dice[-order(dice, decreasing = !dropLowest)[1:dropDice] %>% 
-    ##         sort]
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#207: if (sort) {
-    ##     dice = sort(dice)
-    ##     if (!is.null(dropDice)) {
-    ##         drop = sort(drop)
-    ##     }
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#213: result = sum(dice) + add
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#214: if (vocal & diceCount > 0) {
-    ##     dicePrint = dice
-    ##     dropPrint = drop
-    ##     if (critMark) {
-    ##         crits = dice %in% c(minValue, maxValue)
-    ##         dicePrint[crits] = glue::glue("*{dice[crits]}*")
-    ##     }
-    ##     print(paste0("Rolls: [ ", paste(dicePrint, collapse = " "), 
-    ##         " ] (", diceString, ")"))
-    ##     if (!is.null(dropDice)) {
-    ##         if (critMark) {
-    ##             crits = drop %in% c(minValue, maxValue)
-    ##             dropPrint[crits] = glue::glue("*{drop[crits]}*")
-    ##         }
-    ##         print(paste("Dropped: [", paste(dropPrint, collapse = " "), 
-    ##             "]"))
-    ##     }
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#215: dicePrint = dice
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#216: dropPrint = drop
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#217: if (critMark) {
-    ##     crits = dice %in% c(minValue, maxValue)
-    ##     dicePrint[crits] = glue::glue("*{dice[crits]}*")
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#218: crits = dice %in% c(minValue, maxValue)
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#219: dicePrint[crits] = glue::glue("*{dice[crits]}*")
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#221: print(paste0("Rolls: [ ", paste(dicePrint, collapse = " "), " ] (", 
-    ##     diceString, ")"))
     ## [1] "Rolls: [ *1* *2* *1* *1* *2* *2* *1* *2* *1* ] (5d2!)"
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#222: if (!is.null(dropDice)) {
-    ##     if (critMark) {
-    ##         crits = drop %in% c(minValue, maxValue)
-    ##         dropPrint[crits] = glue::glue("*{drop[crits]}*")
-    ##     }
-    ##     print(paste("Dropped: [", paste(dropPrint, collapse = " "), 
-    ##         "]"))
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#230: if (!returnRolls) {
-    ##     return(result)
-    ## } else {
-    ##     if (is.null(dropDice)) {
-    ##         drop = NULL
-    ##     }
-    ##     return(list(result = result, dice = dice, drop = drop))
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#231: return(result)
 
     ## [1] 13
 
@@ -175,81 +101,7 @@ roll('5d2!') # exploding dice
 roll('5d2!!') # compounding dice
 ```
 
-    ## Called from: rollParam(rules$diceCount, rules$diceSide, rules$fate, rules$sort, 
-    ##     rules$dropDice, rules$dropLowest, rules$add, rules[["reroll"]], 
-    ##     rules$rerollOnce, rules$explode, rules$diceString, critMark, 
-    ##     vocal, returnRolls)
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#188: dice = lapply(dice, function(x) {
-    ##     manyRolls = c()
-    ##     while (x == max(possibleDice)) {
-    ##         manyRolls = c(manyRolls, x)
-    ##         x = resample(possibleDice, 1)
-    ##     }
-    ##     x = c(manyRolls, x)
-    ##     if (explode == 2) {
-    ##         x = sum(x)
-    ##     }
-    ##     return(x)
-    ## }) %>% unlist
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#202: if (!is.null(dropDice)) {
-    ##     drop = dice[order(dice, decreasing = !dropLowest)[1:dropDice] %>% 
-    ##         sort]
-    ##     dice = dice[-order(dice, decreasing = !dropLowest)[1:dropDice] %>% 
-    ##         sort]
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#207: if (sort) {
-    ##     dice = sort(dice)
-    ##     if (!is.null(dropDice)) {
-    ##         drop = sort(drop)
-    ##     }
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#213: result = sum(dice) + add
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#214: if (vocal & diceCount > 0) {
-    ##     dicePrint = dice
-    ##     dropPrint = drop
-    ##     if (critMark) {
-    ##         crits = dice %in% c(minValue, maxValue)
-    ##         dicePrint[crits] = glue::glue("*{dice[crits]}*")
-    ##     }
-    ##     print(paste0("Rolls: [ ", paste(dicePrint, collapse = " "), 
-    ##         " ] (", diceString, ")"))
-    ##     if (!is.null(dropDice)) {
-    ##         if (critMark) {
-    ##             crits = drop %in% c(minValue, maxValue)
-    ##             dropPrint[crits] = glue::glue("*{drop[crits]}*")
-    ##         }
-    ##         print(paste("Dropped: [", paste(dropPrint, collapse = " "), 
-    ##             "]"))
-    ##     }
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#215: dicePrint = dice
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#216: dropPrint = drop
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#217: if (critMark) {
-    ##     crits = dice %in% c(minValue, maxValue)
-    ##     dicePrint[crits] = glue::glue("*{dice[crits]}*")
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#218: crits = dice %in% c(minValue, maxValue)
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#219: dicePrint[crits] = glue::glue("*{dice[crits]}*")
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#221: print(paste0("Rolls: [ ", paste(dicePrint, collapse = " "), " ] (", 
-    ##     diceString, ")"))
     ## [1] "Rolls: [ *1* *1* *1* *1* *1* ] (5d2!!)"
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#222: if (!is.null(dropDice)) {
-    ##     if (critMark) {
-    ##         crits = drop %in% c(minValue, maxValue)
-    ##         dropPrint[crits] = glue::glue("*{drop[crits]}*")
-    ##     }
-    ##     print(paste("Dropped: [", paste(dropPrint, collapse = " "), 
-    ##         "]"))
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#230: if (!returnRolls) {
-    ##     return(result)
-    ## } else {
-    ##     if (is.null(dropDice)) {
-    ##         drop = NULL
-    ##     }
-    ##     return(list(result = result, dice = dice, drop = drop))
-    ## }
-    ## debug at D:/gitRepos/diceSyntax/R/diceBackground.R#231: return(result)
 
     ## [1] 5
 
@@ -310,3 +162,15 @@ diceProb('4d6d1') %>% plot(names(.) %>% as.numeric(),.)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
+diceProb('1d4!',explodeDepth = 4) %>% plot(names(.) %>% as.numeric(),.)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+
+``` r
+diceProb('1d4ro1!',explodeDepth = 4) %>% plot(names(.) %>% as.numeric(),.)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->

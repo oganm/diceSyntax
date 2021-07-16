@@ -64,6 +64,10 @@ Probabilities of outcomes can be calculated with `diceProb` function
 ```{r}
 diceProb('4d6d1') %>% plot(names(.) %>% as.numeric(),.)
 
+diceProb('1d4!',explodeDepth = 4) %>% plot(names(.) %>% as.numeric(),.)
+
+diceProb('1d4ro1!',explodeDepth = 4) %>% plot(names(.) %>% as.numeric(),.)
+
 ```
 
 
