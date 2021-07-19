@@ -168,8 +168,8 @@ rollParam =  function(diceCount,
     resample <- function(x, ...) x[sample.int(length(x), ...)]
 
     if(!fate){
-        dice = resample((1:diceSide)[!1:diceSide %in% reroll],diceCount,replace=TRUE)
         possibleDice = (1:diceSide)[!1:diceSide %in% reroll]
+        dice = resample(possibleDice,diceCount,replace=TRUE)
         minValue = min((1:diceSide)[!1:diceSide %in% reroll])
         maxValue = diceSide
     } else{
@@ -180,7 +180,7 @@ rollParam =  function(diceCount,
     }
 
     if(length(rerollOnce)>0){
-        dice[dice %in% rerollOnce] = resample((1:diceSide)[!1:diceSide %in% reroll],sum(dice %in% rerollOnce),replace=TRUE)
+        dice[dice %in% rerollOnce] = resample(possibleDice,sum(dice %in% rerollOnce),replace=TRUE)
     }
 
     if(explode>0){
@@ -189,6 +189,7 @@ rollParam =  function(diceCount,
             while(x == max(possibleDice)){
                 manyRolls = c(manyRolls,x)
                 x = resample(possibleDice,1)
+                x[x %in% rerollOnce] = resample(possibleDice,sum(x %in% rerollOnce),replace=TRUE)
             }
             x = c(manyRolls,x)
             if(explode == 2){

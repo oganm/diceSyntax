@@ -158,19 +158,19 @@ r("10d10dl3",returnRolls = TRUE, vocal = FALSE)
 Probabilities of outcomes can be calculated with `diceProb` function
 
 ``` r
-diceProb('4d6d1') %>% plot(names(.) %>% as.numeric(),.)
+diceProb('4d6d1') %>% as.table %>% plot
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
-diceProb('1d4!',explodeDepth = 4) %>% plot(names(.) %>% as.numeric(),.)
+diceProb('1d4!',explodeDepth = 4) %>% as.table %>% plot
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
 
 ``` r
-diceProb('1d4ro1!',explodeDepth = 4) %>% plot(names(.) %>% as.numeric(),.)
+diceProb('1d4ro1!',explodeDepth = 4) %>% as.table %>% plot
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
