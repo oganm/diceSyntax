@@ -4,8 +4,14 @@
 \alias{swarm}
 \title{Simulate swarm attack}
 \usage{
-swarm(AC, count, damageDice, attackBonus = 0, damageBonus = 0,
-  advantage = c("N", "D", "A"))
+swarm(
+  AC,
+  count,
+  damageDice,
+  attackBonus = 0,
+  damageBonus = 0,
+  advantage = c("N", "D", "A")
+)
 }
 \arguments{
 \item{AC}{AC of the opponent}

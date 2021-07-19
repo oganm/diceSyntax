@@ -3,6 +3,7 @@
 export("%<>%")
 export("%>%")
 export(animate)
+export(compositeDiceParser)
 export(diceParser)
 export(diceProb)
 export(diceStats)

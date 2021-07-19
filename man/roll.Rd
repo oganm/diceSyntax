@@ -7,7 +7,7 @@
 roll(dice, critMark = TRUE, vocal = TRUE, returnRolls = FALSE)
 }
 \arguments{
-\item{dice}{character. If a variable name, the variable must not be a valid dice syntax that starts with an r or the function will just roll that dice instead (eg. r4d6). description of the dice to be rolled. 4d6 rolls four six sided dice. 4d6+3 adds 3 to the result. 4d6k3 keeps the highest 3 dice. 4d6d1 drops the lowest one dice. 4d6kl3 keeps the lowest 3 dice. 4d6dh1 drops the highest 1 dice. 4d6r1 rerolls all 1s. 4d6ro1 rerolls 1s once. 4df rolls fate dice.}
+\item{dice}{character, a valid dice syntax}
 
 \item{vocal}{Should it print individual rolls}
 
